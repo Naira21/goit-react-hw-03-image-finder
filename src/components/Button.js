@@ -1,13 +1,9 @@
 import "./styles.css";
 
-export default function Button({ results }) {
-  const scrolling = window.scrollTo({
-    top: document.documentElement.scrollHeight,
-    behavior: "smooth",
-  });
+export default function Button({ onClick, results }) {
   return (
     results.length > 0 && (
-      <button type="button" onClick={scrolling} className="Button">
+      <button type="button" className="Button" onClick={onClick}>
         Load more
       </button>
     )

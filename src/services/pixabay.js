@@ -36,7 +36,10 @@ export class PixabayFetch {
     return this._page;
   }
   set page(value) {
-    return (this._page = +value);
+    return (this._page += value);
+  }
+  resetPage() {
+    return (this._page = 1);
   }
 
   async searchPhotos() {

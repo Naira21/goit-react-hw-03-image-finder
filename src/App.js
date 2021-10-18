@@ -19,7 +19,7 @@ import { ImageGallery } from "./components/ImageGallery";
 class App extends Component {
   state = {
     searchValue: "",
-    page: 1,
+    // page: 1,
     //searchResults:[],
   };
 
