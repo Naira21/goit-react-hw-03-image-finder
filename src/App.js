@@ -6,6 +6,7 @@ import "./App.css";
 //импорт компонентов
 import Searchbar from "./components/Searchbar";
 import { ImageGallery } from "./components/ImageGallery";
+import { Modal } from "./components/Modal";
 
 // let searchQuery = 'bear';
 // let searchPage = '1';
@@ -38,7 +39,9 @@ class App extends Component {
     return (
       <div className="App">
         <Searchbar onSubmit={this.getSearchValue} />
-        <ImageGallery searchValue={searchValue} page={page} />
+        <Modal>
+          <ImageGallery searchValue={searchValue} page={page} />
+        </Modal>
       </div>
     );
   }
