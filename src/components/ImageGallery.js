@@ -4,6 +4,7 @@ import { PixabayFetch } from "../services/pixabay";
 import ImageGalleryItem from "./ImageGalleryItem";
 import Button from "./Button";
 import LoaderComponent from "./Loader";
+import { Modal } from "./Modal";
 
 //для запроса
 const API_KEY = `23235889-ad2e782c3a775466fc04cd861`;
@@ -13,7 +14,9 @@ const newPixabayFetch = new PixabayFetch(API_KEY, BASE_URL);
 export class ImageGallery extends Component {
   state = {
     searchResults: [],
+    showModal: false,
     status: "init",
+    bigUrlState: "",
   };
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.searchValue !== this.props.searchValue) {
@@ -26,6 +29,7 @@ export class ImageGallery extends Component {
         .then((searchResults) => {
           console.log(searchResults);
           this.setState({ searchResults, status: "success" });
+          this.scrolling();
         })
         .catch((err) => {
           console.log(err);
@@ -33,6 +37,7 @@ export class ImageGallery extends Component {
         });
     }
   }
+
   handleClick = () => {
     newPixabayFetch.page = 1;
     console.log("page", newPixabayFetch.page);
@@ -43,10 +48,7 @@ export class ImageGallery extends Component {
           searchResults: [...prev.searchResults, ...searchResults],
           status: "success",
         }));
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: "smooth",
-        });
+        this.scrolling();
       })
       .catch((err) => {
         console.log(err);
@@ -54,39 +56,66 @@ export class ImageGallery extends Component {
       });
   };
 
+  scrolling = () => {
+    window.scrollTo({
+      top: document.documentElement.scrollHeight,
+      behavior: "smooth",
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ showModal: false, bigUrlState: "" });
+  };
+
+  openModal = (bigImg) => {
+    this.setState({
+      showModal: true,
+      bigUrlState: bigImg,
+    });
+  };
+
   render() {
-    if (this.state.status === "init") {
+    const { searchResults, status, showModal } = this.state;
+    const { closeModal, handleClick, openModal } = this;
+    if (status === "init") {
       return null;
     }
-    if (this.state.status === "pending") {
+    if (status === "pending") {
       return <LoaderComponent />;
     }
-    if (this.state.status === "success") {
+    if (status === "success") {
       return (
         <>
           <ul className="ImageGallery">
-            {this.state.searchResults.map((picture) => {
-              return <ImageGalleryItem picture={picture} key={picture.id} />;
-            })}
-            {/* {this.state.searchResults.total.length > 0 &&
-              this.state.searchResults.map((picture) => {
-                return <ImageGalleryItem picture={picture} key={picture.id} />;
-              })} */}
+            {searchResults.length > 0 &&
+              searchResults.map((picture) => {
+                return (
+                  <ImageGalleryItem
+                    key={picture.id}
+                    onClick={openModal}
+                    pictUrl={picture.webformatURL}
+                    photographer={picture.user}
+                  />
+                );
+              })}
+            {showModal && (
+              <Modal
+                onClick={closeModal}
+                largePic={searchResults.largeImageURL}
+              />
+            )}
           </ul>
-          {/* <button type="button" onClick={this.handleClick}>
-              load more
-            </button> */}
-          {/* <Button type="button" results={this.state.searchResults} onClick={this.handleClick} /> */}
-          <Button
-            type="button"
-            onClick={this.handleClick}
-            results={this.state.searchResults}
-          />
+
+          <Button type="button" onClick={handleClick} results={searchResults} />
+
+          {/* {this.showModal && (<Modal onClick={this.toggleModal} largePicture={this.state.searchResults.largeImageURL }  userName={this.state.searchResults.user }/>)} */}
         </>
       );
     }
-    if (this.state.status === "error") {
-      return alert("Sorry, we have not find such word... Lets try again!");
+    if (status === "error") {
+      if (searchResults.length === 0) {
+        return alert("Sorry, we have not find such word... Lets try again!");
+      }
     }
   }
 }
