@@ -1,7 +1,5 @@
 import { Component } from "react";
 import "./App.css";
-
-//импорт компонентов
 import Searchbar from "./components/Searchbar";
 import { ImageGallery } from "./components/ImageGallery";
 

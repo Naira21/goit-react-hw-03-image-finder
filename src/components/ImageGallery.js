@@ -16,7 +16,7 @@ export class ImageGallery extends Component {
     searchResults: [],
     showModal: false,
     status: "init",
-    bigUrlState: "",
+    largImg: "",
   };
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.searchValue !== this.props.searchValue) {
@@ -31,8 +31,7 @@ export class ImageGallery extends Component {
           this.setState({ searchResults, status: "success" });
           this.scrolling();
         })
-        .catch((err) => {
-          console.log(err);
+        .catch(() => {
           this.setState({ status: "error" });
         });
     }
@@ -50,8 +49,7 @@ export class ImageGallery extends Component {
         }));
         this.scrolling();
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         this.setState({ status: "error" });
       });
   };
@@ -64,13 +62,13 @@ export class ImageGallery extends Component {
   };
 
   closeModal = () => {
-    this.setState({ showModal: false, bigUrlState: "" });
+    this.setState({ showModal: false });
   };
 
-  openModal = (bigImg) => {
+  openModal = (e) => {
     this.setState({
       showModal: true,
-      bigUrlState: bigImg,
+      largImg: e.target.dataset.source,
     });
   };
 
@@ -95,20 +93,15 @@ export class ImageGallery extends Component {
                     onClick={openModal}
                     pictUrl={picture.webformatURL}
                     photographer={picture.user}
+                    largImg={picture.largeImageURL}
                   />
                 );
               })}
             {showModal && (
-              <Modal
-                onClick={closeModal}
-                largePic={searchResults.largeImageURL}
-              />
+              <Modal onClick={closeModal} largePic={this.state.largImg} />
             )}
           </ul>
-
           <Button type="button" onClick={handleClick} results={searchResults} />
-
-          {/* {this.showModal && (<Modal onClick={this.toggleModal} largePicture={this.state.searchResults.largeImageURL }  userName={this.state.searchResults.user }/>)} */}
         </>
       );
     }

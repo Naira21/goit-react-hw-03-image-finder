@@ -1,7 +1,7 @@
 import "./styles.css";
 import PropTypes from "prop-types";
 
-const ImageGalleryItem = ({ pictUrl, photographer, onClick }) => {
+const ImageGalleryItem = ({ pictUrl, photographer, onClick, largImg }) => {
   return (
     <li className="ImageGalleryItem">
       <img
@@ -9,6 +9,7 @@ const ImageGalleryItem = ({ pictUrl, photographer, onClick }) => {
         alt={photographer}
         className="ImageGalleryItem-image"
         onClick={onClick}
+        data-source={largImg}
       />
     </li>
   );
